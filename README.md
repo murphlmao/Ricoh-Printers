@@ -1,5 +1,6 @@
 # Ricoh
-
+Forked project from anthonyfox @ https://github.com/WTFox/printers      
+Added more printers, added csv reader.
 ## About
 Whenever my organization hires or fires someone, I have to go into each of our 5 printers and add/remove the user. This is often the step I forget to do, and it's definitely the one I like the least.
 
@@ -34,15 +35,25 @@ xx55 series
 * Ricoh MP 5055
 
 Also supported
+* Ricoh IM C2500
+* Ricoh IM C3000
 * Ricoh C307
 * Ricoh Aficio MP 9001 
 
 ## Installation
+L
 ```bash
 git clone https://github.com/WTFox/printers.git
 cd printers
 sudo python setup.py install
 ```
+W
+```bash
+git clone https://github.com/WTFox/printers.git
+python setup.py install
+# run updateprinter after filling in your data
+```
+
 
 ## Usage
 ```python
@@ -71,11 +82,17 @@ with Ricoh(**printer_conn) as ricoh:
         # 2 Billy Bob
         # 3 ...
 
-    # add a user
-    ricoh.add_user(userid='jean', name='James Dean', displayName='James D', email='jdean@gmail.com')
-
-    # delete user (by id)
-    ricoh.delete_user(138)
+    # add a user from csv file containing employees
+    # csv structure: First, Last, Email
+    with open('employees.csv', 'r') as csvfile:
+        reader = csv.reader(csvfile)
+        headers = next(reader) # skip headers
+        for row in reader:
+            first, last, email = row
+            name = f"{first} {last}"
+            displayName = f"{first} {last[0]}."
+            userid = first.lower()
+            ricoh.add_user(userid=userid, name=name, displayName=displayName, email=email)
 ```
 
 ## Disclaimer
